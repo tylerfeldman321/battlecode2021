@@ -59,15 +59,16 @@ public class Vector {
 
         int val = this.toInt();
         int possibleValues = (maxGridSize * 2 - 1) * (maxGridSize * 2 - 1);
+        int offset = 0;
 
-        int offset = 1;
+        /*
         switch (rt) {
             case MUCKRAKER: offset = 1; break;
             case SLANDERER: offset = possibleValues+1; break;
             case POLITICIAN: offset = possibleValues*2+1; break;
             case ENLIGHTENMENT_CENTER: offset = possibleValues*3+1; break;
             default: System.out.println("NOT A VALID ROBOT TYPE");
-        }
+        }*/
 
         return offset + val;
     }

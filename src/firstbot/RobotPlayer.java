@@ -1,5 +1,6 @@
 package firstbot;
 import battlecode.common.*;
+import java.util.*;
 
 public strictfp class RobotPlayer {
     static RobotController rc;
@@ -23,6 +24,11 @@ public strictfp class RobotPlayer {
 
     static int turnCount;
 
+    static int left;
+    static int right;
+    static int top;
+    static int bottom;
+
     public static void run(RobotController rc) throws GameActionException {
 
         RobotPlayer.rc = rc;
@@ -35,6 +41,7 @@ public strictfp class RobotPlayer {
             try {
                 // Here, we've separated the controls into a different method for each RobotType.
                 // You may rewrite this into your own control structure if you wish.
+
                 System.out.println("I'm a " + rc.getType() + "! Location " + rc.getLocation());
                 switch (rc.getType()) {
                     case ENLIGHTENMENT_CENTER: runEnlightenmentCenter(); break;
@@ -55,7 +62,8 @@ public strictfp class RobotPlayer {
 
     public static void runEnlightenmentCenter() {
         if (turnCount == 0) {
-            findMapBorders();
+            // Should try to find map border(s) if possible
+
         }
     }
 
@@ -71,9 +79,38 @@ public strictfp class RobotPlayer {
 
     }
 
-    public static void findMapBorders() {
-        MapLocation currentLocation = rc.getLocation();
+    public static void tryToFindMapBorders() throws GameActionException {
 
+        // iterate up, down, right, and left to find the map border
+        // if we find the map border, we should try to communicate this to the rest of the robots
+        // (if we end up finding all of the map borders, then we will know where the enemy ec are)
+        int[] boundaries = new int[4];
+
+        Direction[] scanDirections = {
+                Direction.NORTH,
+                Direction.EAST,
+                Direction.SOUTH,
+                Direction.WEST
+        };
+
+        for (int i = 0; i < scanDirections.length; i++) {
+            MapLocation currentLocation = rc.getLocation();
+            while (rc.canSenseLocation(currentLocation)) {
+                currentLocation = currentLocation.add(scanDirections[i]);
+            }
+            // Either ends because it is out of the robot's sensor range or the location is not on the map
+            // If the location is not on the map, then we have hit the border
+            if (!rc.onTheMap(currentLocation)) {
+                if ((scanDirections[i] == Direction.NORTH) || (scanDirections[i] == Direction.SOUTH)) {
+                    boundaries[i] = currentLocation.y;
+                } else {
+                    boundaries[i] = currentLocation.x;
+                }
+            }
+        }
+        for (int i = 0; i < boundaries.length; i++) {
+
+        }
 
     }
 
